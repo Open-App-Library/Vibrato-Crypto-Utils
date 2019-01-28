@@ -2,8 +2,8 @@ all: compile run
 
 compile: a.out
 
-a.out: main.c vibrato-crypto.c
-	gcc main.c vibrato-crypto.c -lsodium
+vcrypto-test: main.c vibrato-crypto.c
+	gcc main.c vibrato-crypto.c -lsodium -o vcrypto-test
 
 run:
 	./a.out
