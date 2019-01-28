@@ -1,0 +1,20 @@
+[
+    {
+        "arguments": [
+            "gcc", 
+            "-c", 
+            "main.c"
+        ], 
+        "directory": "/home/doug/Code/c/vibrato-crypto", 
+        "file": "main.c"
+    }, 
+    {
+        "arguments": [
+            "gcc", 
+            "-c", 
+            "vibrato-crypto.c"
+        ], 
+        "directory": "/home/doug/Code/c/vibrato-crypto", 
+        "file": "vibrato-crypto.c"
+    }
+]
