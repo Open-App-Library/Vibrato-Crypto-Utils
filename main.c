@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sodium.h>
-
 #include "vibrato-crypto.h"
 
 #define MESSAGE ((const unsigned char *) "I like awesome")
@@ -12,22 +11,22 @@
 int main()
 {
   if (vcrypto_init() < 0) {
-    puts("Sodium cannot init!");
+    puts("vcrypto cannot init!");
   }
-  unsigned char key[crypto_secretbox_KEYBYTES];
 
+  // Create a random key
+  unsigned char key[crypto_secretbox_KEYBYTES];
   crypto_secretbox_keygen(key);
 
-
-
+  // Encrypt a message
   char *msg = "Hello world. This is a complete test.\nThis message is so secret you have to be really badass to get it.";
   char myenc[vcrypto_encrypt_string_len(strlen(msg))];
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
 
+  // Testing out triads
   VibratoEncryptedObject obj;
   vcrypto_parse_triad(&obj, myenc, strlen(myenc));
-
   printf("%s\n%s\n%s\n", obj.versiontag, obj.ciphertext64, obj.nonce64);
 
   vcrypto_free_triad(obj);

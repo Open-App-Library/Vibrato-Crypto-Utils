@@ -81,7 +81,7 @@ int vcrypto_decrypt_string(char *decrypted,
   if (triadParseStatus == -1)
     return -1;
 
-  obj.
+  ceil
 
   crypto_secretbox_open_easy(decrypted, , CIPHERTEXT_LEN, nonce, key)
   return 0;
