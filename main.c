@@ -29,5 +29,8 @@ int main()
   vcrypto_parse_triad(&obj, myenc, strlen(myenc));
   printf("%s\n%s\n%s\n", obj.versiontag, obj.ciphertext64, obj.nonce64);
 
+  // Decryption
+  vcrypto_decrypt_string("", key, myenc, strlen(myenc));
+
   vcrypto_free_triad(obj);
 }

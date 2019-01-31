@@ -1,5 +1,6 @@
 #include "vibrato-crypto.h"
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include <sodium.h>
 
@@ -72,6 +73,16 @@ int vcrypto_encrypt_string(char *encrypted,
   return 0;
 }
 
+int base64_decoded_length(int b64_len)
+{
+  return 3 * ceil(b64_len / 4.0) + 1;
+}
+
+int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
+{
+  return sodium_base642bin(bin, bin_len, b64, b64_len, NULL, NULL, NULL, sodium_base64_VARIANT_ORIGINAL);
+}
+
 int vcrypto_decrypt_string(char *decrypted,
                            const unsigned char *key,
                            const unsigned char *encrypted_string, const int encrypted_string_len)
@@ -81,9 +92,15 @@ int vcrypto_decrypt_string(char *decrypted,
   if (triadParseStatus == -1)
     return -1;
 
-  obj.
+  int ciphertext64_len = strlen(obj.ciphertext64);
+  int ciphertext_len = base64_decoded_length(ciphertext64_len);
+  char ciphertext[ciphertext_len];
 
-  crypto_secretbox_open_easy(decrypted, , CIPHERTEXT_LEN, nonce, key)
+  int success =
+
+  printf("The success is %i\n", success);
+
+  //  crypto_secretbox_open_easy(decrypted, , CIPHERTEXT_LEN, nonce, key)
   return 0;
 }
 
@@ -96,7 +113,7 @@ int periodCount(char *str, int str_len)
   return count;
 }
 
-int vcrypto_parse_triad(VibratoEncryptedObject *obj, const char *triad, const int triad_len)
+int vcrypto_parse_triad(VibratoEncryptedObject *obj, const unsigned char *triad, const int triad_len)
 {
   // First make sure we have two periods
   int periodCount = 0;

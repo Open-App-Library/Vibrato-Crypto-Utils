@@ -23,7 +23,7 @@ int vcrypto_decrypt_string(char *decrypted,
                            const unsigned char *key,
                            const unsigned char *encrypted_string, const int encrypted_string_len);
 
-int vcrypto_parse_triad(VibratoEncryptedObject *obj, const char *triad, const int triad_len);
+int vcrypto_parse_triad(VibratoEncryptedObject *obj, const unsigned char *triad, const int triad_len);
 
 void vcrypto_free_triad(VibratoEncryptedObject obj);
 
