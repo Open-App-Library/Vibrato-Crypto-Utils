@@ -89,14 +89,16 @@ int vcrypto_decrypt_string(char *decrypted,
 {
   VibratoEncryptedObject obj;
   int triadParseStatus = vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len);
-  if (triadParseStatus == -1)
+  if (triadParseStatus == -1) {
+    DEBUG_PRINT("Failed to parse triad.");
     return -1;
+  }
 
   int ciphertext64_len = strlen(obj.ciphertext64);
   int ciphertext_len = base64_decoded_length(ciphertext64_len);
   char ciphertext[ciphertext_len];
 
-  int success =
+  int success = base64_to_bin(ciphertext, ciphertext_len, obj.ciphertext64, ciphertext64_len);
 
   printf("The success is %i\n", success);
 

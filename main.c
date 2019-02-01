@@ -23,7 +23,6 @@ int main()
   char myenc[vcrypto_encrypt_string_len(strlen(msg))];
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
-
   // Testing out triads
   VibratoEncryptedObject obj;
   vcrypto_parse_triad(&obj, myenc, strlen(myenc));
