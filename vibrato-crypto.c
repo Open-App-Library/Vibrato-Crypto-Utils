@@ -88,8 +88,9 @@ int vcrypto_decrypt_string(char *decrypted,
                            const unsigned char *encrypted_string, const int encrypted_string_len)
 {
   VibratoEncryptedObject obj;
-  int triadParseStatus = vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len);
-  if (triadParseStatus == -1) {
+  int status;
+  status = vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len);
+  if (status == -1) {
     DEBUG_PRINT("Failed to parse triad.");
     return -1;
   }
@@ -98,7 +99,12 @@ int vcrypto_decrypt_string(char *decrypted,
   int ciphertext_len = base64_decoded_length(ciphertext64_len);
   char ciphertext[ciphertext_len];
 
-  int success = base64_to_bin(ciphertext, ciphertext_len, obj.ciphertext64, ciphertext64_len);
+  status = base64_to_bin(ciphertext, ciphertext_len, obj.ciphertext64, ciphertext64_len);
+  if (!status) {
+    DEBUG_PRINT("Failed to parse ciphertext base64.");
+    return -1;
+  }
+
 
   printf("The success is %i\n", success);
 
