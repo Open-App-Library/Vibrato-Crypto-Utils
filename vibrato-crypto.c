@@ -87,7 +87,7 @@ int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
   return sodium_base642bin(bin, bin_len, b64, b64_len, NULL, NULL, NULL, sodium_base64_VARIANT_ORIGINAL);
 }
 
-int vcrypto_decrypt_string(unsigned char *decrypted,
+int vcrypto_decrypt_string(unsigned char *decrypted, int decrypted_len,
                            const unsigned char *key,
                            const unsigned char *encrypted_string, const int encrypted_string_len)
 {
@@ -129,6 +129,8 @@ int vcrypto_decrypt_string(unsigned char *decrypted,
     DEBUG_PRINT("Failed to decrypt message. Invalid.");
     return -1;
   }
+
+  decrypted[decrypted_len-1] = '\0';
 
   return 0;
 }

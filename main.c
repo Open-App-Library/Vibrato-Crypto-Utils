@@ -24,7 +24,7 @@ int main()
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
   // Decryption
-  char dec[strlen(msg)];
-  vcrypto_decrypt_string(dec, key, myenc, strlen(myenc));
+  char dec[strlen(msg)+1];
+  vcrypto_decrypt_string(dec, strlen(msg)+1, key, myenc, strlen(myenc));
   printf("Msg is %s\n", dec);
 }
