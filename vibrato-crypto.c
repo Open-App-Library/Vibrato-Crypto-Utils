@@ -47,8 +47,6 @@ int vcrypto_encrypt_string(char *encrypted,
     return status;
   }
 
-  printf("%i -- %i\n", ciphertext_len, sizeof ciphertext);
-
   // Converting the ciphertext to base64
   int  b64_ciphertext_len = sodium_base64_encoded_len(ciphertext_len, sodium_base64_VARIANT_ORIGINAL);
   char b64_ciphertext[b64_ciphertext_len];
@@ -113,8 +111,6 @@ int vcrypto_decrypt_string(unsigned char *decrypted,
   int ciphertext_len = base64_decoded_length(ciphertext64, ciphertext64_len);
   unsigned char ciphertext[ciphertext_len];
 
-  printf("%s\n", ciphertext64);
-  printf("%i -- %i\n", ciphertext_len, sizeof ciphertext);
   if (base64_to_bin(ciphertext, ciphertext_len, ciphertext64, ciphertext64_len) != 0) {
     DEBUG_PRINT("Failed to parse ciphertext base64.");
     return -1;

@@ -19,7 +19,7 @@ int main()
   crypto_secretbox_keygen(key);
 
   // Encrypt a message
-  char *msg = "Hello world.";
+  char *msg = "1";
   char myenc[vcrypto_encrypt_string_len(strlen(msg))];
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
