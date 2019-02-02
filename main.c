@@ -19,17 +19,12 @@ int main()
   crypto_secretbox_keygen(key);
 
   // Encrypt a message
-  char *msg = "Hello world. This is a complete test.\nThis message is so secret you have to be really badass to get it.";
+  char *msg = "Hello world.";
   char myenc[vcrypto_encrypt_string_len(strlen(msg))];
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
-  // Testing out triads
-  VibratoEncryptedObject obj;
-  vcrypto_parse_triad(&obj, myenc, strlen(myenc));
-  printf("%s\n%s\n%s\n", obj.versiontag, obj.ciphertext64, obj.nonce64);
-
   // Decryption
-  vcrypto_decrypt_string("", key, myenc, strlen(myenc));
-
-  vcrypto_free_triad(obj);
+  char dec[strlen(msg)];
+  vcrypto_decrypt_string(dec, key, myenc, strlen(myenc));
+  printf("Msg is %s\n", dec);
 }

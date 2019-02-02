@@ -47,6 +47,8 @@ int vcrypto_encrypt_string(char *encrypted,
     return status;
   }
 
+  printf("%i -- %i\n", ciphertext_len, sizeof ciphertext);
+
   // Converting the ciphertext to base64
   int  b64_ciphertext_len = sodium_base64_encoded_len(ciphertext_len, sodium_base64_VARIANT_ORIGINAL);
   char b64_ciphertext[b64_ciphertext_len];
@@ -69,13 +71,17 @@ int vcrypto_encrypt_string(char *encrypted,
   strcat(return_string, b64_nonce);
 
   strcpy(encrypted, return_string);
-
   return 0;
 }
 
-int base64_decoded_length(int b64_len)
+int base64_decoded_length(const char *b64, int b64_len)
 {
-  return 3 * ceil(b64_len / 4.0) + 1;
+  int padding = 0;
+  for (int i =0; i < strlen(b64); i++) {
+    if (b64[i] == '=')
+      padding++;
+  }
+  return 3 * ceil(b64_len / 4.0) - padding;
 }
 
 int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
@@ -83,32 +89,51 @@ int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
   return sodium_base642bin(bin, bin_len, b64, b64_len, NULL, NULL, NULL, sodium_base64_VARIANT_ORIGINAL);
 }
 
-int vcrypto_decrypt_string(char *decrypted,
+int vcrypto_decrypt_string(unsigned char *decrypted,
                            const unsigned char *key,
                            const unsigned char *encrypted_string, const int encrypted_string_len)
 {
   VibratoEncryptedObject obj;
-  int status;
-  status = vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len);
-  if (status == -1) {
+
+  if (vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len) != 0) {
     DEBUG_PRINT("Failed to parse triad.");
     return -1;
   }
 
-  int ciphertext64_len = strlen(obj.ciphertext64);
-  int ciphertext_len = base64_decoded_length(ciphertext64_len);
-  char ciphertext[ciphertext_len];
+  char versiontag[strlen(obj.versiontag)+1];
+  char ciphertext64[strlen(obj.ciphertext64)+1];
+  char nonce64[strlen(obj.nonce64)+1];
+  strcpy(versiontag, obj.versiontag);
+  strcpy(ciphertext64, obj.ciphertext64);
+  strcpy(nonce64, obj.nonce64);
 
-  status = base64_to_bin(ciphertext, ciphertext_len, obj.ciphertext64, ciphertext64_len);
-  if (!status) {
+  vcrypto_free_triad(obj);
+
+  int ciphertext64_len = strlen(ciphertext64);
+  int ciphertext_len = base64_decoded_length(ciphertext64, ciphertext64_len);
+  unsigned char ciphertext[ciphertext_len];
+
+  printf("%s\n", ciphertext64);
+  printf("%i -- %i\n", ciphertext_len, sizeof ciphertext);
+  if (base64_to_bin(ciphertext, ciphertext_len, ciphertext64, ciphertext64_len) != 0) {
     DEBUG_PRINT("Failed to parse ciphertext base64.");
     return -1;
   }
 
+  int nonce64_len = strlen(nonce64);
+  int nonce_len = crypto_secretbox_NONCEBYTES;
+  unsigned char nonce[nonce_len];
+  if (base64_to_bin(nonce, nonce_len, nonce64, nonce64_len) != 0) {
+    DEBUG_PRINT("Failed to parse nonce base64.");
+    return -1;
+  }
 
-  printf("The success is %i\n", success);
+  // Decrypt
+  if (crypto_secretbox_open_easy(decrypted, ciphertext, ciphertext_len, nonce, key) != 0) {
+    DEBUG_PRINT("Failed to decrypt message. Invalid.");
+    return -1;
+  }
 
-  //  crypto_secretbox_open_easy(decrypted, , CIPHERTEXT_LEN, nonce, key)
   return 0;
 }
 

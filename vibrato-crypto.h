@@ -19,7 +19,7 @@ int vcrypto_encrypt_string(char *encrypted,
                            const unsigned char *key,
                            const unsigned char *message, const unsigned long long message_len);
 
-int vcrypto_decrypt_string(char *decrypted,
+int vcrypto_decrypt_string(unsigned char *decrypted,
                            const unsigned char *key,
                            const unsigned char *encrypted_string, const int encrypted_string_len);
 
