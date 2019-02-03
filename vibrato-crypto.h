@@ -12,6 +12,9 @@ typedef struct {
 
 int vcrypto_init();
 
+int vcrypto_get_privatekey(unsigned char *privatekey, const unsigned char *email, const char *password);
+int vcrypto_get_publickey(unsigned char *publickey, const unsigned char *privatekey);
+
 int vcrypto_encrypt_string_len(const int message_len);
 int vcrypto_decrypt_string_len(const unsigned char *encrypted_string, const int encrypted_string_len);
 

@@ -14,9 +14,12 @@ int main()
     puts("vcrypto cannot init!");
   }
 
-  // Create a random key
   unsigned char key[crypto_secretbox_KEYBYTES];
-  crypto_secretbox_keygen(key);
+  unsigned char pubkey[crypto_box_PUBLICKEYBYTES];
+  if (vcrypto_get_privatekey(key, "dsdfsdfsfougie.io", "hello this is an awesome test") != 0)
+    puts("FAILED! privkey");
+  if (vcrypto_get_publickey(pubkey, key) != 0)
+    puts("FAILED! pubkey");
 
   // Encrypt a message
   char *msg = "hello world";

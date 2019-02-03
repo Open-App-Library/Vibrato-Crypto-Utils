@@ -33,6 +33,25 @@ int vcrypto_init()
   return sodium_init();
 }
 
+int vcrypto_get_privatekey(unsigned char *privatekey, const unsigned char *email, const char *password)
+{
+  unsigned char key[crypto_secretbox_KEYBYTES];
+
+  if (crypto_pwhash
+      (key, sizeof key, password, strlen(password), email,
+       crypto_pwhash_OPSLIMIT_INTERACTIVE, crypto_pwhash_MEMLIMIT_INTERACTIVE,
+       crypto_pwhash_ALG_DEFAULT) != 0) {
+    return -1;
+  }
+  memcpy(privatekey, key, crypto_secretbox_KEYBYTES);
+  return 0;
+}
+
+int vcrypto_get_publickey(unsigned char *publickey, const unsigned char *privatekey)
+{
+  return crypto_scalarmult_base(publickey, privatekey);
+}
+
 int vcrypto_encrypt_string_len(const int message_len)
 {
   int  b64_ciphertext_len = sodium_base64_encoded_len(crypto_secretbox_MACBYTES + message_len,
