@@ -13,7 +13,7 @@ typedef struct {
 int vcrypto_init();
 
 int vcrypto_encrypt_string_len(const int message_len);
-int vcrypto_decrypt_string_len(char *encrypted_string, const int encrypted_string_len);
+int vcrypto_decrypt_string_len(const unsigned char *encrypted_string, const int encrypted_string_len);
 
 int vcrypto_encrypt_string(char *encrypted,
                            const unsigned char *key,

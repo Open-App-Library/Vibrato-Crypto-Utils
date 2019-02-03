@@ -13,6 +13,21 @@
 #define DEBUG_PRINT(...) do{ } while ( 0 )
 #endif
 
+int base64_decoded_length(const char *b64, int b64_len)
+{
+  int padding = 0;
+  for (int i =0; i < strlen(b64); i++) {
+    if (b64[i] == '=')
+      padding++;
+  }
+  return 3 * ceil(b64_len / 4.0) - padding;
+}
+
+int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
+{
+  return sodium_base642bin(bin, bin_len, b64, b64_len, NULL, NULL, NULL, sodium_base64_VARIANT_ORIGINAL);
+}
+
 int vcrypto_init()
 {
   return sodium_init();
@@ -25,6 +40,21 @@ int vcrypto_encrypt_string_len(const int message_len)
   int  b64_nonce_len = sodium_base64_encoded_len(crypto_secretbox_NONCEBYTES,
                                                  sodium_base64_VARIANT_ORIGINAL);
   return ENCRYPTED_LEN_FROM_B64(b64_ciphertext_len, b64_nonce_len);
+}
+
+int vcrypto_decrypt_string_len(const unsigned char *encrypted_string, const int encrypted_string_len)
+{
+  VibratoEncryptedObject obj;
+  vcrypto_parse_triad(&obj, encrypted_string, encrypted_string_len);
+
+  char ciphertext64[strlen(obj.ciphertext64)];
+  strcpy(ciphertext64, obj.ciphertext64);
+  vcrypto_free_triad(obj);
+
+  int ciphertext64_len = strlen(ciphertext64);
+  int ciphertext_len = base64_decoded_length(ciphertext64, ciphertext64_len);
+
+  return ciphertext_len - crypto_secretbox_macbytes();
 }
 
 int vcrypto_encrypt_string(char *encrypted,
@@ -70,21 +100,6 @@ int vcrypto_encrypt_string(char *encrypted,
 
   strcpy(encrypted, return_string);
   return 0;
-}
-
-int base64_decoded_length(const char *b64, int b64_len)
-{
-  int padding = 0;
-  for (int i =0; i < strlen(b64); i++) {
-    if (b64[i] == '=')
-      padding++;
-  }
-  return 3 * ceil(b64_len / 4.0) - padding;
-}
-
-int base64_to_bin(unsigned char *bin, int bin_len, char *b64, int b64_len)
-{
-  return sodium_base642bin(bin, bin_len, b64, b64_len, NULL, NULL, NULL, sodium_base64_VARIANT_ORIGINAL);
 }
 
 int vcrypto_decrypt_string(unsigned char *decrypted, int decrypted_len,

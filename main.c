@@ -19,12 +19,14 @@ int main()
   crypto_secretbox_keygen(key);
 
   // Encrypt a message
-  char *msg = "1";
+  char *msg = "hello world";
   char myenc[vcrypto_encrypt_string_len(strlen(msg))];
   vcrypto_encrypt_string(myenc, key, msg, strlen(msg));
 
   // Decryption
-  char dec[strlen(msg)+1];
+  int dec_len = vcrypto_decrypt_string_len(myenc, strlen(myenc));
+  char dec[dec_len];
+  printf("The dec_len is %i\n", dec_len);
   vcrypto_decrypt_string(dec, strlen(msg)+1, key, myenc, strlen(myenc));
   printf("Msg is %s\n", dec);
 }
