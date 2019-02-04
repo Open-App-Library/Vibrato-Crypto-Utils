@@ -1,6 +1,10 @@
 #ifndef VIBRATO_CRYPTO_H
 #define VIBRATO_CRYPTO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define VCRYPTO_VERSIONTAG "vcrypto-0-0-1"
 #define VCRYPTO_VERSIONTAG_LEN 13
 
@@ -29,5 +33,9 @@ int vcrypto_decrypt_string(unsigned char *decrypted, int decrypted_len,
 int vcrypto_parse_triad(VibratoEncryptedObject *obj, const unsigned char *triad, const int triad_len);
 
 void vcrypto_free_triad(VibratoEncryptedObject obj);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
